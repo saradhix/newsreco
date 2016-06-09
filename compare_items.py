@@ -6,11 +6,15 @@ import json
 
 import mylib
 
+
+items_to_read = 1000
+top_matches_count = 10
+
 conn = pymongo.MongoClient()
 db = conn.test
 coll = db.articles
 
-docs = coll.find().limit(1000)
+docs = coll.find().limit(items_to_read)
 doclist=[]
 documents=[]
 for doc in docs:
@@ -20,33 +24,30 @@ for doc in docs:
 
 
 print len(doclist)
-max_similarity = 0
-maxa=doclist[0]
-maxb=doclist[0]
+similarity_matrix=[]
 for i in range(len(doclist)):
   for j in range(i+1,len(doclist)):
     a = doclist[i]
     b = doclist[j]
     similarity = mylib.jaccard_similarity(a,b)
-    if similarity > max_similarity:
-      max_similarity = similarity
-      maxa = a
-      maxb = b
-      idxa = i
-      idxb = j
-#    print similarity
-print max_similarity
-print "-"*60
-print sorted(maxa)
-print "-"*30
-print sorted(maxb)
-print "-"*30
-print sorted(set(maxa) & set(maxb))
+    row = (i, j, similarity)
+    similarity_matrix.append(row)
 
-print "-"*30
-print "Printing articles"
-print documents[idxa]
-print "-"*30
-print documents[idxb]
+#Now we have a list of rows, which are to be sorted on similarity which is 3rd
+#element in the tuple
+
+top_similar = sorted(similarity_matrix, key = lambda x:x[2], reverse=True)[0:top_matches_count]
+print top_similar
+
+print "Printing pairs"
+for item in top_similar:
+  print "Similarity=", item[2]
+  print documents[item[0]]
+  print "*"*40
+  print documents[item[1]]
+  print "-"*40
+  print set(doclist[item[0]]) & set(doclist[item[1]])
+  print "=="*40
+
 
 
