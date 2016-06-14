@@ -7,8 +7,8 @@ import json
 import mylib
 
 
-items_to_read = 1000
-top_matches_count = 10
+items_to_read = 30
+top_matches_count = 100
 
 conn = pymongo.MongoClient()
 db = conn.test
@@ -18,7 +18,7 @@ docs = coll.find().limit(items_to_read)
 doclist=[]
 documents=[]
 for doc in docs:
-  documents.append(doc['description'])
+  documents.append(doc)
   nouns_and_verbs = mylib.get_nouns_and_verbs(doc['description'])
   doclist.append(nouns_and_verbs)
 
@@ -42,9 +42,11 @@ print top_similar
 print "Printing pairs"
 for item in top_similar:
   print "Similarity=", item[2]
-  print documents[item[0]]
+  print ((documents[item[0]]))
+  print (json.loads(documents[item[0]]))
+  print json.dumps(json.loads(documents[item[0]]))
   print "*"*40
-  print documents[item[1]]
+  print json.dumps(json.loads(documents[item[1]]))
   print "-"*40
   print set(doclist[item[0]]) & set(doclist[item[1]])
   print "=="*40
