@@ -29,3 +29,15 @@ def jaccard_similarity(x,y):
   union_cardinality = len(set.union(*[set(x), set(y)]))
   #print intersection_cardinality, union_cardinality
   return intersection_cardinality/float(union_cardinality)
+
+def make_bigrams(para):
+  text = para.split('.')
+  text = [ word.strip() for word in text]
+  bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:])]
+  return bigrams
+def make_trigrams(para):
+  text = para.split('.')
+  text = [ word.strip() for word in text]
+  bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:],
+      l.split(" ")[2:])]
+  return bigrams
