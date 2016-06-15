@@ -7,7 +7,7 @@ import json
 import mylib
 
 
-items_to_read = 1000
+items_to_read = 2000
 top_matches_count = 1000
 
 min_similarity = 0.2
@@ -63,10 +63,14 @@ for item in top_similar:
   trigrams2 = mylib.make_trigrams(doc2[0])
   js_bigram_similarity = mylib.jaccard_similarity(bigrams1, bigrams2)
   js_trigram_similarity = mylib.jaccard_similarity(trigrams1, trigrams2)
+  bg_tg_ratio = js_bigram_similarity/float(js_trigram_similarity)
   print ""
   print "JS_bigram=", js_bigram_similarity,"JS_trigram=", js_trigram_similarity
-  print "Time difference=", abs(int(doc1[1])-int(doc2[1]))/3600000, "t1=", doc1[1], "t2=",doc2[1]
+  print "BGTG ratio =", bg_tg_ratio
+  print "Time difference=", abs(int(doc1[1])-int(doc2[1]))/float(3600000), "t1=", doc1[1], "t2=",doc2[1]
   print set(bigrams1) & set(bigrams2)
+  print "Common trigrams"
+  print set(trigrams1) & set(trigrams2)
   print "=="*40
   print "=="*40
   print ""
