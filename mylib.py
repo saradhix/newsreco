@@ -41,3 +41,9 @@ def make_trigrams(para):
   bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:],
       l.split(" ")[2:])]
   return bigrams
+def make_fourgrams(para):
+  text = para.split('.')
+  text = [ word.strip() for word in text]
+  bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:],
+      l.split(" ")[2:], l.split(" ")[3:])]
+  return bigrams
