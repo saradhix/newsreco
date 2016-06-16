@@ -7,7 +7,7 @@ import json
 import mylib
 
 
-items_to_read = 2000
+items_to_read = 5000
 top_matches_count = 1000
 
 min_similarity = 0.2
@@ -20,10 +20,15 @@ coll = db.articles
 docs = coll.find().limit(items_to_read)
 doclist=[]
 documents=[]
+print "Items to read=", items_to_read
+cx = 0
 for doc in docs:
   documents.append([doc['description'], doc['discoverTime'], doc['title']])
   nouns_and_verbs = mylib.get_nouns_and_verbs(doc['description'])
   doclist.append(nouns_and_verbs)
+  cx = cx + 1
+  if cx % 100 == 0:
+    print cx, "documents processed"
 
 
 print len(doclist)
@@ -49,6 +54,8 @@ for item in top_similar:
   print "Similarity=", item[2]
   doc1 = documents[item[0]]
   doc2 = documents[item[1]]
+  if int(doc1[1]) > int(doc2[1]):
+    (doc1,doc2) = (doc2,doc1)
   print "Document 1"
   print doc1
   print "*"*40
@@ -63,7 +70,10 @@ for item in top_similar:
   trigrams2 = mylib.make_trigrams(doc2[0])
   js_bigram_similarity = mylib.jaccard_similarity(bigrams1, bigrams2)
   js_trigram_similarity = mylib.jaccard_similarity(trigrams1, trigrams2)
-  bg_tg_ratio = js_bigram_similarity/float(js_trigram_similarity)
+  if js_trigram_similarity == 0.0:
+    bg_tg_ratio = "INFINITE"
+  else:
+    bg_tg_ratio = js_bigram_similarity/float(js_trigram_similarity)
   print ""
   print "JS_bigram=", js_bigram_similarity,"JS_trigram=", js_trigram_similarity
   print "BGTG ratio =", bg_tg_ratio
