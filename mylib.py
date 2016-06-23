@@ -47,3 +47,15 @@ def make_fourgrams(para):
   bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:],
       l.split(" ")[2:], l.split(" ")[3:])]
   return bigrams
+def make_fivegrams(para):
+  text = para.split('.')
+  text = [ word.strip() for word in text]
+  bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:],
+      l.split(" ")[2:], l.split(" ")[3:], l.split(" ")[4:])]
+  return bigrams
+def make_sixgrams(para):
+  text = para.split('.')
+  text = [ word.strip() for word in text]
+  bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:],
+      l.split(" ")[2:], l.split(" ")[3:], l.split(" ")[4:], l.split(" ")[5:])]
+  return bigrams
