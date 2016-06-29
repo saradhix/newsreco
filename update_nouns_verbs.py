@@ -14,9 +14,8 @@ documents=[]
 cx = 0
 for doc in docs:
   cx = cx + 1
-  print cx, "documents updated"
   objid = doc['_id']
-  nouns_and_verbs = mylib.get_nouns_and_verbs(doc['description'])
+  nouns_and_verbs = mylib.get_nouns_and_verbs(doc['desc'])
   result = db.articles.update_one({"_id":objid}, {"$set": {"nv": nouns_and_verbs} })
   if cx % 1000 == 0:
     print cx, "documents updated"
