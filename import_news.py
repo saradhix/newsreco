@@ -4,11 +4,11 @@ import pymongo
 import itertools
 import json
 
-news_file = 'newsarticles.txt'
+news_file = 'output'
 
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles
+coll = db.articles_telugu
 coll.remove()
 
 fp = open(news_file, 'r')
@@ -21,11 +21,14 @@ for line in fp:
   #print line
   article_id = (line[0:8]).strip()
   article = line[8:]
-  json_obj = json.loads(article)
-  #print json_obj['lang']
+  try:
+    json_obj = json.loads(article)
+  except Exception as inst:
+    continue
+  lang = json_obj.get('lang','U')
   #print json_obj
   #print "Article id= %s" % article_id
-  if json_obj['lang'] == 'en':
+  if lang =='te':
       coll.insert(json_obj)
       count = count + 1
       if count % 1000 == 0:

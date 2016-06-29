@@ -8,7 +8,7 @@ import time
 import mylib
 
 
-items_to_read = 10000
+items_to_read = 2000
 top_matches_count = 2000
 
 min_similarity = 0.2
