@@ -7,7 +7,7 @@ import json
 import mylib
 
 
-items_to_read = 3000
+items_to_read = 5000
 top_matches_count = 2000
 
 min_similarity = 0.2
@@ -50,6 +50,7 @@ top_similar = sorted(similarity_matrix, key = lambda x:x[2], reverse=True)[0:top
 print len(top_similar)
 print top_similar
 
+target_collection.remove()
 print "Printing pairs"
 for item in top_similar:
   print "Similarity=", item[2]
@@ -90,8 +91,8 @@ for item in top_similar:
   print "=="*40
   print "=="*40
   print ""
-  json_obj={'doca':doc1,'docb':doc2}
-  db.target_collection.insert(json_obj)
+  json_obj={'doca':doc1, 'docb':doc2,'sim2g':js_bigram_similarity, 'sim3g':js_trigram_similarity, 'sim4g':js_fourgram_similarity,'ds':item[2] }
+  target_collection.insert(json_obj)
 
 
 
