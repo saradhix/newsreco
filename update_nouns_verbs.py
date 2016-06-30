@@ -17,7 +17,6 @@ for doc in docs:
   objid = doc['_id']
   nouns_and_verbs = mylib.get_nouns_and_verbs(doc['desc'])
   result = db.articles.update_one({"_id":objid}, {"$set": {"nv": nouns_and_verbs} })
-  if cx % 1000 == 0:
-    print cx, "documents updated"
+  print cx, "documents updated"
 
 print "Done"

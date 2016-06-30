@@ -8,7 +8,7 @@ news_file = 'output'
 
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles_telugu
+coll = db.articles
 coll.remove()
 
 fp = open(news_file, 'r')
@@ -28,7 +28,7 @@ for line in fp:
   lang = json_obj.get('lang','U')
   #print json_obj
   #print "Article id= %s" % article_id
-  if lang =='te':
+  if lang =='en':
       coll.insert(json_obj)
       count = count + 1
       if count % 1000 == 0:
