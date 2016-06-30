@@ -7,7 +7,7 @@ import json
 import mylib
 
 
-items_to_read = 10000
+items_to_read = 3000
 top_matches_count = 2000
 
 min_similarity = 0.2
@@ -15,7 +15,8 @@ max_similarity = 0.8
 
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles
+coll = db.articles_en_old_18k
+target_collection = db.docpairs
 
 docs = coll.find().limit(items_to_read)
 doclist=[]
@@ -89,6 +90,8 @@ for item in top_similar:
   print "=="*40
   print "=="*40
   print ""
+  json_obj={'doca':doc1,'docb':doc2}
+  db.target_collection.insert(json_obj)
 
 
 
