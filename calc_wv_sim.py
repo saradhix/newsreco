@@ -1,4 +1,5 @@
 import sys
+#map(print, itertools.repeat(fp.readline(),3))
 import pymongo
 import itertools
 import json

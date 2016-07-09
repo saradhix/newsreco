@@ -3,7 +3,7 @@ import mylib
 
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles_telugu
+coll = db.articles_new
 
 #docs = coll.find().limit(items_to_read)
 docs = coll.find()
@@ -11,7 +11,7 @@ doclist=[]
 documents=[]
 print "Starting to read"
 cx = 0
-file_name = 'word_vec_telugu.txt'
+file_name = 'word_vec_english.txt'
 f = open(file_name, 'w')
 for doc in docs:
   cx = cx + 1

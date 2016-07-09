@@ -8,14 +8,11 @@ news_file = 'output'
 
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles
+coll = db.articles_new
 coll.remove()
 
 fp = open(news_file, 'r')
 
-#map(print, fp.read().split('\n')[0:2])
-
-#map(print, itertools.repeat(fp.readline(),3))
 count = 0
 for line in fp:
   #print line
