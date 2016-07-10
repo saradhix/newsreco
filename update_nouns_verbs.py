@@ -1,9 +1,10 @@
 import pymongo
 import mylib
+import sys
 
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles
+coll = db.articles_new
 
 items_to_read = 1
 #docs = coll.find().limit(items_to_read)
@@ -16,7 +17,8 @@ for doc in docs:
   cx = cx + 1
   objid = doc['_id']
   nouns_and_verbs = mylib.get_nouns_and_verbs(doc['desc'])
-  result = db.articles.update_one({"_id":objid}, {"$set": {"nv": nouns_and_verbs} })
-  print cx, "documents updated"
+  result = coll.update_one({"_id":objid}, {"$set": {"nv": nouns_and_verbs} })
+  if cx % 100 == 0:
+    print cx, "documents updated with nv"
 
 print "Done"

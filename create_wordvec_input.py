@@ -1,5 +1,4 @@
 import pymongo
-import mylib
 
 conn = pymongo.MongoClient()
 db = conn.test

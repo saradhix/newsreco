@@ -4,7 +4,7 @@ import pymongo
 import itertools
 import json
 
-news_file = 'output'
+news_file = 'articles_set2'
 
 conn = pymongo.MongoClient()
 db = conn.test
@@ -20,6 +20,7 @@ for line in fp:
   article = line[8:]
   try:
     json_obj = json.loads(article)
+    json_obj['article_id']=article_id
   except Exception as inst:
     continue
   lang = json_obj.get('lang','U')
