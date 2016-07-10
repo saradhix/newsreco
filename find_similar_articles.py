@@ -65,9 +65,9 @@ def process_article_pair(itema, itemb):
     #Now calculate the wv similarity
     doca = itema['desc']
     docb = itemb['desc']
-    print doca
-    print "-"*40
-    print docb
+    #print doca
+    #print "-"*40
+    #print docb
     veca = generate_wordvectors(doca)
     vecb = generate_wordvectors(docb)
     similarity = 1 - spatial.distance.cosine(veca,vecb)
