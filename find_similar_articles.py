@@ -10,9 +10,13 @@ from nltk.tokenize import wordpunct_tokenize
 from nltk.tokenize import RegexpTokenizer
 import numpy as np
 from scipy import spatial
+import os
 
 tokenizer = RegexpTokenizer(r'\w+')
-model = models.Word2Vec.load_word2vec_format('word_vec_english.txt.vec')
+print "Reading model file. May take some time"
+#model = models.Word2Vec.load_word2vec_format('word_vec_english.txt.vec')
+model = models.Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+print "Done reading model file"
 
 conn = pymongo.MongoClient()
 db = conn.test
@@ -24,33 +28,76 @@ offset = max_days*24*60*60*1000
 conn = pymongo.MongoClient()
 db = conn.test
 coll = db.articles_new_with_verbs
-targetcoll = db.article_pairs
+targetcoll = db.article_pairs_google
 targetcoll.remove()
+
+topic_resume_file = 'topics.resume'
+index_resume_file = 'index.resume'
 
 def main():
 
   items_to_read = 1
   #articles = coll.find().limit(items_to_read)
+  #Read the completed topics into a list
+  processed_topics = []
+  try:
+    fp = open(topic_resume_file,'r')
+    for processed_topic in fp:
+      processed_topics.append(processed_topic.strip())
+    fp.close()
+  except:
+    print "topic_resume_file not present"
+    pass
+    #If file not present processed_topics would be empty
   topics = coll.distinct("cat")
   num = 0
   for topic in topics:
+    if topic is None: continue
+    if topic in processed_topics: continue
     num += find_similar_articles(topic)
+    try:
+      fp = open(topic_resume_file,'a+')
+      fp.write(topic+'\n')
+      fp.close()
+    except:
+      print "Write to topic resume file failed"
+
   print "Total num=", num
 
 def find_similar_articles(topic):
   print  "Entered fsa with topic", topic
+  #Check if index.resume is present
+  start_index = 0
+  try:
+    fp = open(index_resume_file,'r')
+    start_index = int(fp.read().strip())
+    fp.close()
+    #Delete the file
+    os.remove(index_resume_file)
+  except:
+    print "No index file present"
+
+  print "Start index =", start_index
   articles = coll.find({"cat":topic}).sort([("ts",1)])
   num_articles = articles.count()
   articles_list=[]
   for article in articles:
     articles_list.append(article)
-
-  for i in range(0, num_articles):
+  print "Num articles=", num_articles
+  for i in range(start_index, num_articles):
     for j in range(i+1, num_articles):
       itema = articles_list[i]
       itemb = articles_list[j]
       process_article_pair(itema, itemb)
       print "i=",i, "j=",j, "topic=", topic, "num=", num_articles
+    try:
+      fp = open(index_resume_file,'w')
+      fp.write(str(i)+'\n')
+      fp.close()
+    except:
+      print "Write to index resume file failed"
+   #Delete the file
+  os.remove(index_resume_file)
   return num_articles
 
 def process_article_pair(itema, itemb):
