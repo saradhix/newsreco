@@ -8,9 +8,9 @@ coll = db.articles_new
 
 items_to_read = 1
 #docs = coll.find().limit(items_to_read)
-docs = coll.find()
-doclist=[]
-documents=[]
+docs = coll.find({"nouns":{"$exists":0}})
+print "Items=", docs.count()
+
 #print "Items to read=", items_to_read
 cx = 0
 for doc in docs:
