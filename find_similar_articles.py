@@ -12,11 +12,11 @@ import numpy as np
 from scipy import spatial
 import os
 
-tokenizer = RegexpTokenizer(r'\w+')
-print "Reading model file. May take some time"
+#tokenizer = RegexpTokenizer(r'\w+')
+#print "Reading model file. May take some time"
 #model = models.Word2Vec.load_word2vec_format('word_vec_english.txt.vec')
-model = models.Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
-print "Done reading model file"
+#model = models.Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+#print "Done reading model file"
 
 conn = pymongo.MongoClient()
 db = conn.test
@@ -27,9 +27,9 @@ offset = max_days*24*60*60*1000
 #Number of microseconds in max_days
 conn = pymongo.MongoClient()
 db = conn.test
-coll = db.articles_new_with_verbs
-targetcoll = db.article_pairs_google
-targetcoll.remove()
+coll = db.articles_new
+targetcoll = db.article_pairs_nvjs
+#targetcoll.remove()
 
 topic_resume_file = 'topics.resume'
 index_resume_file = 'index.resume'
@@ -103,25 +103,32 @@ def find_similar_articles(topic):
 def process_article_pair(itema, itemb):
   #print "Entered pap with ", a, b
 
-  nva = itema['nv']
-  nvb = itemb['nv']
+  na = itema['nouns']
+  va = itema['verbs']
+  nb = itemb['nouns']
+  vb = itemb['verbs']
+
+  nva = na + va
+  nvb = nb + vb
 
   js_sim_nv = mylib.jaccard_similarity(nva, nvb)
   if js_sim_nv >= min_similarity and js_sim_nv <= max_similarity:
+    noun_sim = mylib.jaccard_similarity(na, nb)
+    verb_sim = mylib.jaccard_similarity(va, vb)
   #if True:
     #Now calculate the wv similarity
-    doca = itema['desc']
-    docb = itemb['desc']
+    #doca = itema['desc']
+    #docb = itemb['desc']
     #print doca
     #print "-"*40
     #print docb
-    veca = generate_wordvectors(doca)
-    vecb = generate_wordvectors(docb)
-    similarity = 1 - spatial.distance.cosine(veca,vecb)
-    similarity = math.fabs(similarity)
-    print "JS", js_sim_nv, "WV", similarity
+    #veca = generate_wordvectors(doca)
+    #vecb = generate_wordvectors(docb)
+    #similarity = 1 - spatial.distance.cosine(veca,vecb)
+    #similarity = math.fabs(similarity)
+    print "JS", js_sim_nv, "NS", noun_sim, "VS", verb_sim
     targetcoll.insert({"itema":itema,"itemb":itemb,"js_sim":js_sim_nv,
-    "wv_sim":similarity})
+        "noun_sim":noun_sim, "verb_sim": verb_sim})
     print "="*40
 
 def generate_wordvectors(string):
