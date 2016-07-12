@@ -1,19 +1,31 @@
 import nltk
 from nltk.corpus import stopwords
+from nltk.stem import *
 
+def preprocess_sentence(sentence):
+  #first convert everything to small case
+  sentence = sentence.lower()
+  #Replace apostrophes
+  sentence = sentence.replace("'s","")
+  return sentence
 
+stemmer = PorterStemmer()
 def get_nouns_and_verbs(sentence):
+  sentence = preprocess_sentence(sentence)
   pos_result = nltk.pos_tag(nltk.word_tokenize(sentence))
-  result = []
+  nouns = set()
+  verbs = set()
   #print pos_result
   for t in pos_result:
-    if t in stopwords.words("english"):
+    if str(t[0]) in stopwords.words("english"):
       continue
     if str(t[1]).startswith('NN'):
-      result.append(t[0])
+      nouns.add(t[0])
     if str(t[1]).startswith('VB'):
-      result.append(t[0])
-  return result
+      verbs.add(t[0])
+  nouns = [stemmer.stem(noun) for noun in nouns]
+  verbs = [stemmer.stem(verb) for verb in verbs]
+  return nouns, verbs
 
 def similarity(a, b):
   alist = get_nouns_and_verbs(a)

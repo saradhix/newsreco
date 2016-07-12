@@ -1,4 +1,5 @@
 import pymongo
+import sys
 
 conn = pymongo.MongoClient()
 db = conn.test
@@ -18,8 +19,9 @@ for doc in docs:
   objid = doc['_id']
   description = doc['desc']
   f.write(description.encode('utf-8')+'\n')
-  if cx % 1000 == 0:
+  if cx % 10000 == 0:
     print cx, "documents updated"
+    sys.exit()
 
 print "Done"
 f.close()
